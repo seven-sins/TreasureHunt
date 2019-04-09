@@ -10,13 +10,21 @@ public class GameManager : MonoSingleton<GameManager> {
     public GameObject bgElement;
     [Tooltip("边界预制体,顺序为:\n上、下、左、右、左上、右上、左下、右下")]
     public GameObject[] borderElements;
+    // 基本元素
+    public GameObject baseElement;
+
+    [Header("图片资源")]
+    public Sprite[] coverTileSprites;
 
     [Header("地图设置")]
     public int w;
     public int h;
 
+    public BaseElement[,] mapArray;
+
     private void Start()
     {
+        mapArray = new BaseElement[w, h];
         // 创建地图
         CreateMap();
         // 设置摄像机
@@ -26,14 +34,20 @@ public class GameManager : MonoSingleton<GameManager> {
     private void CreateMap()
     {
         Transform bgHolder = GameObject.Find("ElementHolder/Background").transform;
+        Transform elementHolder = GameObject.Find("ElementHolder").transform;
+        // 创建元素
         for (int i = 0; i < w; i++)
         {
             for (int j = 0; j < h; j++)
             {
+                // 创建背景元素
                 Instantiate(bgElement, new Vector3(i, j, 0), Quaternion.identity, bgHolder);
+                // 创建可操作的无素并放置到地图元素数组中
+                mapArray[i, j] = Instantiate(baseElement, new Vector3(i, j, 0), Quaternion.identity, elementHolder).GetComponent<BaseElement>();
             }
         }
 
+        // 创建边界
         for (int i = 0; i < w; i++)
         {
             Instantiate(borderElements[0], new Vector3(i, h + 0.25f, 0), Quaternion.identity, bgHolder);
@@ -52,6 +66,7 @@ public class GameManager : MonoSingleton<GameManager> {
         Instantiate(borderElements[7], new Vector3(w + 0.25f, -1.25f, 0), Quaternion.identity, bgHolder);
     }
 
+    // 
     private void ResetCamera()
     {
         Camera.main.orthographicSize = (h + 3) / 2f;

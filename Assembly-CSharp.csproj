@@ -61,7 +61,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\Element\BaseElement\BaseElement.cs" />
+    <Compile Include="Assets\Scripts\Element\BaseElement\CantCoveredElement.cs" />
+    <Compile Include="Assets\Scripts\Element\BaseElement\DoubleCoveredElement.cs" />
+    <Compile Include="Assets\Scripts\Element\BaseElement\SingleCoveredElement.cs" />
     <Compile Include="Assets\Scripts\GameManager.cs" />
+    <Compile Include="Assets\Scripts\Utility\Enumeration.cs" />
     <Reference Include="UnityEditor.StandardEvents">
       <HintPath>E:/Unity_Projects/TreasureHunt/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
     </Reference>

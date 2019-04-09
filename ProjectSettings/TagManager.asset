@@ -44,3 +44,6 @@ TagManager:
   - name: BG
     uniqueID: 1977256837
     locked: 0
+  - name: Cover
+    uniqueID: 937355587
+    locked: 0

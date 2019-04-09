@@ -220,6 +220,18 @@ MonoBehaviour:
   - {fileID: 1341934638646296, guid: b7bd1f114b5b3114cbe50d9c90d67fed, type: 2}
   - {fileID: 1335821704950050, guid: e2e46d14c6d46fd4faf0de31276fa597, type: 2}
   - {fileID: 1445497758967518, guid: 4ae5727bdb268684eb9d1dcbe39e3b61, type: 2}
+  baseElement: {fileID: 1112445048707132, guid: a0cc6faf2a549b54c8c98f2215c5048c,
+    type: 2}
+  coverTileSprites:
+  - {fileID: 21300000, guid: 5ba64fc60ec888f44b3663ac90ca7800, type: 3}
+  - {fileID: 21300000, guid: 2ab7ae40e9c82134eb621f131a50bc9d, type: 3}
+  - {fileID: 21300000, guid: 93103bdbe9f3f8a4cb1473c216201123, type: 3}
+  - {fileID: 21300000, guid: 7806a79c9778c7144bc3a1e6dc0aea82, type: 3}
+  - {fileID: 21300000, guid: 14f9a9da5faabbc46b24477478d744fe, type: 3}
+  - {fileID: 21300000, guid: 0d5e8f323195daf4c84caa27b2ca73c2, type: 3}
+  - {fileID: 21300000, guid: 6629933856a069147a51a3e5c5babbcf, type: 3}
+  - {fileID: 21300000, guid: f9a18bffd975d5040a4ddc6cbd1bcb48, type: 3}
+  - {fileID: 21300000, guid: e3b6fd569c17ded48aae244af833fa3d, type: 3}
   w: 19
   h: 9
 --- !u!1 &1867928987
