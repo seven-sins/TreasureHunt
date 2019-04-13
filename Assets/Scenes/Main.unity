@@ -222,6 +222,10 @@ MonoBehaviour:
   - {fileID: 1445497758967518, guid: 4ae5727bdb268684eb9d1dcbe39e3b61, type: 2}
   baseElement: {fileID: 1112445048707132, guid: a0cc6faf2a549b54c8c98f2215c5048c,
     type: 2}
+  flagElement: {fileID: 1033989223291864, guid: d514e1f048249ed4487e79bc16630c05,
+    type: 2}
+  smokeEffect: {fileID: 1304938073035982, guid: eddae845d9567fc408899f18a85b1cc1,
+    type: 2}
   coverTileSprites:
   - {fileID: 21300000, guid: 5ba64fc60ec888f44b3663ac90ca7800, type: 3}
   - {fileID: 21300000, guid: 2ab7ae40e9c82134eb621f131a50bc9d, type: 3}

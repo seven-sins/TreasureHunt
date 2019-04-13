@@ -13,6 +13,11 @@ public class GameManager : MonoSingleton<GameManager> {
     // 基本元素
     public GameObject baseElement;
 
+    public GameObject flagElement;
+
+    [Header("特效")]
+    public GameObject smokeEffect;
+
     [Header("图片资源")]
     public Sprite[] coverTileSprites;
 
@@ -71,5 +76,13 @@ public class GameManager : MonoSingleton<GameManager> {
     {
         Camera.main.orthographicSize = (h + 3) / 2f;
         Camera.main.transform.position = new Vector3((w - 1) / 2f, (h - 1) / 2f, -10);
+    }
+
+    /// <summary>
+    /// 初始化地图无素
+    /// </summary>
+    private void InitMap()
+    {
+
     }
 }
