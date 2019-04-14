@@ -62,6 +62,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Demigiant\DOTweenPro\DOTweenAnimation.cs" />
+    <Compile Include="Assets\Scripts\Effect\DestroyEffect.cs" />
     <Compile Include="Assets\Scripts\Element\BaseElement\BaseElement.cs" />
     <Compile Include="Assets\Scripts\Element\BaseElement\CantCoveredElement.cs" />
     <Compile Include="Assets\Scripts\Element\BaseElement\DoubleCoveredElement.cs" />

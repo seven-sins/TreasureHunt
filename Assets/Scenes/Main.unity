@@ -224,7 +224,11 @@ MonoBehaviour:
     type: 2}
   flagElement: {fileID: 1033989223291864, guid: d514e1f048249ed4487e79bc16630c05,
     type: 2}
+  errorElement: {fileID: 1159576001216438, guid: 08569ea9756b6b447aacefb8e2a4d088,
+    type: 2}
   smokeEffect: {fileID: 1304938073035982, guid: eddae845d9567fc408899f18a85b1cc1,
+    type: 2}
+  UncoveredEffect: {fileID: 1577787527627038, guid: eb6eeee19122fed4aa243c39f214f383,
     type: 2}
   coverTileSprites:
   - {fileID: 21300000, guid: 5ba64fc60ec888f44b3663ac90ca7800, type: 3}
@@ -236,8 +240,27 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 6629933856a069147a51a3e5c5babbcf, type: 3}
   - {fileID: 21300000, guid: f9a18bffd975d5040a4ddc6cbd1bcb48, type: 3}
   - {fileID: 21300000, guid: e3b6fd569c17ded48aae244af833fa3d, type: 3}
+  trapSprites:
+  - {fileID: 21300000, guid: df5dfdb49dad12a4db439d9aa818aad9, type: 3}
+  - {fileID: 21300000, guid: 5137423c1a7bcb64bab6b09fd0aa63e7, type: 3}
+  - {fileID: 21300000, guid: 38ae48dad4ede304d864ec0629007535, type: 3}
+  - {fileID: 21300000, guid: 53dc077b3ddf661498ce77a6bc63cf11, type: 3}
+  - {fileID: 21300000, guid: 12c6d3e56f0fd474594701272ddb2767, type: 3}
+  numberSprites:
+  - {fileID: 21300000, guid: b637ddf3a98a6fe4986512bb9909fc2a, type: 3}
+  - {fileID: 21300000, guid: bcedde5f2d9b7f7458b0853c2186c940, type: 3}
+  - {fileID: 21300000, guid: 7b829c8096512ba4db97f136bd757929, type: 3}
+  - {fileID: 21300000, guid: c4e868030eb240747b4ab95989a715d1, type: 3}
+  - {fileID: 21300000, guid: 0454e60676c33af43a28cf7a7e9a46c1, type: 3}
+  - {fileID: 21300000, guid: 1f2ccd2cee3c3db44ad2b8bcb039c5a1, type: 3}
+  - {fileID: 21300000, guid: 7768a9e979f3ace40b3b5a9dc7f4f9f7, type: 3}
+  - {fileID: 21300000, guid: 1d1e83289cf80d34a97a76b9ca2c81f4, type: 3}
+  - {fileID: 21300000, guid: a0b0f5f58cc801444b8c96aa926e6da3, type: 3}
   w: 19
   h: 9
+  minTrapProbability: 0.1
+  maxTrapProbability: 0.13
+  uncoveredProbability: 0.1
 --- !u!1 &1867928987
 GameObject:
   m_ObjectHideFlags: 0

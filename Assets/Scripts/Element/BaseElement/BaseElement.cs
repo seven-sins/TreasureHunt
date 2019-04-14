@@ -59,4 +59,16 @@ public class BaseElement : MonoBehaviour {
     {
         gameObject.GetComponent<SpriteRenderer>().sprite = sprite;
     }
+
+    /// <summary>
+    /// 去除当前元素的阴影
+    /// </summary>
+    public void ClearShadow()
+    {
+        Transform shadow = transform.Find("shadow");
+        if(shadow != null)
+        {
+            Destroy(shadow.gameObject);
+        }
+    }
 }
