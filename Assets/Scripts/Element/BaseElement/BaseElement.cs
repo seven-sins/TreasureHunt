@@ -71,4 +71,14 @@ public class BaseElement : MonoBehaviour {
             Destroy(shadow.gameObject);
         }
     }
+
+    /// <summary>
+    /// 转为数字元素
+    /// </summary>
+    public void ToNumberElement()
+    {
+        GameManager.Instance.mapArray[x,y] = gameObject.AddComponent<NumberElement>();
+        ((NumberElement)GameManager.Instance.mapArray[x, y]).UnCoveredElement();
+        Destroy(this);
+    }
 }

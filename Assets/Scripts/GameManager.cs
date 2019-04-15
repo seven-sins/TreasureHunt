@@ -18,11 +18,18 @@ public class GameManager : MonoSingleton<GameManager> {
     [Header("特效")]
     public GameObject smokeEffect;
     public GameObject UncoveredEffect;
+    public GameObject GoldEffect;
 
     [Header("图片资源")]
     public Sprite[] coverTileSprites;
     public Sprite[] trapSprites;
     public Sprite[] numberSprites;
+    public Sprite[] toolSprites;
+    public Sprite[] goldSprites;
+    public Sprite[] bigwallSprites;
+    public Sprite[] smallwallSprites;
+    public Sprite[] enemySprites;
+    public Sprite[] doorSprites;
 
     [Header("地图设置")]
     public int w;
@@ -100,6 +107,25 @@ public class GameManager : MonoSingleton<GameManager> {
         {
             availableIndex.Add(i);
         }
+
+        for (int i = 0; i < 10; i++)
+        {
+            int tempIndex = availableIndex[Random.Range(0, availableIndex.Count)];
+            int x, y;
+            GetPosition(tempIndex, out x, out y);
+            availableIndex.Remove(tempIndex);
+            SetElement(tempIndex, ElementContent.Tool);
+        }
+
+        for (int i = 0; i < 10; i++)
+        {
+            int tempIndex = availableIndex[Random.Range(0, availableIndex.Count)];
+            int x, y;
+            GetPosition(tempIndex, out x, out y);
+            availableIndex.Remove(tempIndex);
+            SetElement(tempIndex, ElementContent.Gold);
+        }
+
         // 生成陷井
         GenerateTrap(availableIndex);
         // 生成数字
@@ -158,6 +184,12 @@ public class GameManager : MonoSingleton<GameManager> {
                 break;
             case ElementContent.Number:
                 mapArray[x, y] = tempGameObject.AddComponent<NumberElement>();
+                break;
+            case ElementContent.Tool:
+                mapArray[x, y] = tempGameObject.AddComponent<ToolElement>();
+                break;
+            case ElementContent.Gold:
+                mapArray[x, y] = tempGameObject.AddComponent<GoldElement>();
                 break;
             default:
                 break;

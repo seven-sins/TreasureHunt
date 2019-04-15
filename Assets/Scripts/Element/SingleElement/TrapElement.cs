@@ -5,7 +5,6 @@ public class TrapElement : SingleCoveredElement {
     protected override void Awake()
     {
         base.Awake();
-        elementState = ElementState.Covered;
         elementContent = ElementContent.Trap;
     }
 

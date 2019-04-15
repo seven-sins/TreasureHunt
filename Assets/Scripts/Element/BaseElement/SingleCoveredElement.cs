@@ -8,6 +8,8 @@ public class SingleCoveredElement : BaseElement
         base.Awake();
         // 保存自己的类型
         elementType = ElementType.SingleCovered;
+        //
+        elementState = ElementState.Covered;
         // 随机加载一张泥土的图片
         LoadSprite(GameManager.Instance.coverTileSprites[Random.Range(0, GameManager.Instance.coverTileSprites.Length)]);
     }

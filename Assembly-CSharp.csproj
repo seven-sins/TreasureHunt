@@ -67,8 +67,14 @@
     <Compile Include="Assets\Scripts\Element\BaseElement\CantCoveredElement.cs" />
     <Compile Include="Assets\Scripts\Element\BaseElement\DoubleCoveredElement.cs" />
     <Compile Include="Assets\Scripts\Element\BaseElement\SingleCoveredElement.cs" />
-    <Compile Include="Assets\Scripts\Element\NumberElement.cs" />
-    <Compile Include="Assets\Scripts\Element\TrapElement.cs" />
+    <Compile Include="Assets\Scripts\Element\CantElement\BigWallElement.cs" />
+    <Compile Include="Assets\Scripts\Element\CantElement\DoorElement.cs" />
+    <Compile Include="Assets\Scripts\Element\CantElement\EnemyElement.cs" />
+    <Compile Include="Assets\Scripts\Element\CantElement\SmallWallElement.cs" />
+    <Compile Include="Assets\Scripts\Element\DoubleElement\GoldElement.cs" />
+    <Compile Include="Assets\Scripts\Element\DoubleElement\ToolElement.cs" />
+    <Compile Include="Assets\Scripts\Element\SingleElement\NumberElement.cs" />
+    <Compile Include="Assets\Scripts\Element\SingleElement\TrapElement.cs" />
     <Compile Include="Assets\Scripts\GameManager.cs" />
     <Compile Include="Assets\Scripts\Utility\Enumeration.cs" />
     <None Include="Assets\Demigiant\DOTweenPro\readme.txt" />

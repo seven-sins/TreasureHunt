@@ -230,6 +230,7 @@ MonoBehaviour:
     type: 2}
   UncoveredEffect: {fileID: 1577787527627038, guid: eb6eeee19122fed4aa243c39f214f383,
     type: 2}
+  GoldEffect: {fileID: 1176560506450844, guid: efbd3412860ce9c4785e4a8bdc0a1420, type: 2}
   coverTileSprites:
   - {fileID: 21300000, guid: 5ba64fc60ec888f44b3663ac90ca7800, type: 3}
   - {fileID: 21300000, guid: 2ab7ae40e9c82134eb621f131a50bc9d, type: 3}
@@ -256,6 +257,38 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 7768a9e979f3ace40b3b5a9dc7f4f9f7, type: 3}
   - {fileID: 21300000, guid: 1d1e83289cf80d34a97a76b9ca2c81f4, type: 3}
   - {fileID: 21300000, guid: a0b0f5f58cc801444b8c96aa926e6da3, type: 3}
+  toolSprites:
+  - {fileID: 21300000, guid: 44e6d3760b2d9064a80274aafade4650, type: 3}
+  - {fileID: 21300000, guid: 670199c87a121ef4a815801ecbf4285d, type: 3}
+  - {fileID: 21300000, guid: 9991e76234598574ea01ed14da88f38e, type: 3}
+  - {fileID: 21300000, guid: 4bdfa21493ccfc0498e378be3705205b, type: 3}
+  - {fileID: 21300000, guid: fadba3b482d36cc438b5de7d81c4233a, type: 3}
+  - {fileID: 21300000, guid: af928164f1da2dc4ab6d57dc963023d2, type: 3}
+  - {fileID: 21300000, guid: 33d8fc7669c3ce74280e878a3a4e94c2, type: 3}
+  - {fileID: 21300000, guid: 85f7c44c265bea142b84dd67c173e6c6, type: 3}
+  - {fileID: 21300000, guid: c3fdd4f239b09e04cb1afd4949689fd9, type: 3}
+  goldSprites:
+  - {fileID: 21300000, guid: 01759fab4ffd9e5418df13e9ebe1273b, type: 3}
+  - {fileID: 21300000, guid: d490c7f8dbb3eed4b918f9b3b36f68c5, type: 3}
+  - {fileID: 21300000, guid: 687b104013d3d584d8d7760ea0d5267d, type: 3}
+  - {fileID: 21300000, guid: 7a3d671205acbf1418f1bbd1bb19c7a6, type: 3}
+  - {fileID: 21300000, guid: 18c74d3aa4bee694da18851e938588ca, type: 3}
+  - {fileID: 21300000, guid: fd7aaadf1739a3b47aca0b6890f65157, type: 3}
+  - {fileID: 21300000, guid: 21281b6d6661b984ea767a3412580ed6, type: 3}
+  bigwallSprites:
+  - {fileID: 21300000, guid: 31a85a4a4f627674182245e09e347c80, type: 3}
+  - {fileID: 21300000, guid: ea5a9b6a57dfe3d45be798cf574b170a, type: 3}
+  smallwallSprites:
+  - {fileID: 21300000, guid: a0668796e3f97f940b51ea732e901c32, type: 3}
+  - {fileID: 21300000, guid: fcd1774f576e33e488b952a72e32a806, type: 3}
+  enemySprites:
+  - {fileID: 21300000, guid: c5f9ddbc274a27948807914cb5d65214, type: 3}
+  - {fileID: 21300000, guid: c1fdbd5075f50f04393f19597865ba79, type: 3}
+  - {fileID: 21300000, guid: 3929750f6c598624ba6cc1a01833811b, type: 3}
+  - {fileID: 21300000, guid: 7fd8b4285a25d7446aff93a5cb1c3024, type: 3}
+  - {fileID: 21300000, guid: b81b4771feb5bde4586b5928c8295100, type: 3}
+  doorSprites:
+  - {fileID: 21300000, guid: 54ea6fd97dc0cfb4183f93f79f8c93db, type: 3}
   w: 19
   h: 9
   minTrapProbability: 0.1

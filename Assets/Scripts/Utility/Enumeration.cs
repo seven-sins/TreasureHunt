@@ -24,3 +24,27 @@ public enum ElementContent
     SmallWall,
     Exit
 }
+
+public enum ToolType
+{
+    Hp,
+    Armor,// 护甲
+    Sword,// 剑
+    Arrow,// 箭
+    Key,
+    Tnt,// 炸药
+    Hoe,// 锄头
+    Grass,// 幸运草
+    Map
+}
+
+public enum GoldType
+{
+    One,
+    Two,
+    Three,
+    Four,
+    Five,
+    Six,
+    Seven
+}
