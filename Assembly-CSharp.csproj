@@ -70,6 +70,7 @@
     <Compile Include="Assets\Scripts\Element\CantElement\BigWallElement.cs" />
     <Compile Include="Assets\Scripts\Element\CantElement\DoorElement.cs" />
     <Compile Include="Assets\Scripts\Element\CantElement\EnemyElement.cs" />
+    <Compile Include="Assets\Scripts\Element\CantElement\ExitElement.cs" />
     <Compile Include="Assets\Scripts\Element\CantElement\SmallWallElement.cs" />
     <Compile Include="Assets\Scripts\Element\DoubleElement\GoldElement.cs" />
     <Compile Include="Assets\Scripts\Element\DoubleElement\ToolElement.cs" />

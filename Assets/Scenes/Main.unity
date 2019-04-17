@@ -289,11 +289,16 @@ MonoBehaviour:
   - {fileID: 21300000, guid: b81b4771feb5bde4586b5928c8295100, type: 3}
   doorSprites:
   - {fileID: 21300000, guid: 54ea6fd97dc0cfb4183f93f79f8c93db, type: 3}
-  w: 19
+  exitSprites:
+  - {fileID: 21300000, guid: 771617005c1cb2f41bfc5df7767b4832, type: 3}
+  w: 18
   h: 9
   minTrapProbability: 0.1
   maxTrapProbability: 0.13
   uncoveredProbability: 0.1
+  standAreaW: 3
+  obstacleAreaW: 2
+  obstacleAreaNum: 0
 --- !u!1 &1867928987
 GameObject:
   m_ObjectHideFlags: 0

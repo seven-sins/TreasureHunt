@@ -30,6 +30,7 @@ public class GameManager : MonoSingleton<GameManager> {
     public Sprite[] smallwallSprites;
     public Sprite[] enemySprites;
     public Sprite[] doorSprites;
+    public Sprite[] exitSprites;
 
     [Header("地图设置")]
     public int w;
@@ -41,12 +42,19 @@ public class GameManager : MonoSingleton<GameManager> {
     public float maxTrapProbability;
     [Header("暴露元素占比")]
     public float uncoveredProbability;
+    // 障碍物
+    public int standAreaW;
+    public int obstacleAreaW;
+    [HideInInspector]
+    public int obstacleAreaNum;
 
     public BaseElement[,] mapArray;
 
     private void Start()
     {
         mapArray = new BaseElement[w, h];
+
+        obstacleAreaNum = (w - (standAreaW + 3)) / obstacleAreaW;
         // 创建地图
         CreateMap();
         // 设置摄像机
@@ -126,17 +134,411 @@ public class GameManager : MonoSingleton<GameManager> {
             SetElement(tempIndex, ElementContent.Gold);
         }
 
+        int standAreaY = Random.Range(1, h - 1);
+
+        // 生成出口
+        GenerateExit(availableIndex);
+        //
+        GenerateObstacleArea(availableIndex);
+        // 生成工具
+        GenerateTool(availableIndex);
+        // 生成金币
+        GenerateGold(availableIndex);
         // 生成陷井
-        GenerateTrap(availableIndex);
+        GenerateTrap(standAreaY, availableIndex);
         // 生成数字
         GenerateNumber(availableIndex);
+
+        GenerateStandArea(standAreaY);
+    }
+
+    /// <summary>
+    /// 生成道具
+    /// </summary>
+    /// <param name="availableIndex">尚未初始化的地图元素的索引值列表</param>
+    private void GenerateTool(List<int> availableIndex)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            int tempIndex = availableIndex[Random.Range(0, availableIndex.Count)];
+            availableIndex.Remove(tempIndex);
+            ToolElement t = (ToolElement)SetElement(tempIndex, ElementContent.Tool);
+            t.toolType = (ToolType)Random.Range(0, 9);
+            if (t.isHide == false)
+            {
+                t.ConfirmSprite();
+            }
+        }
+    }
+
+    /// <summary>
+    /// 生成金币
+    /// </summary>
+    /// <param name="availableIndex">尚未初始化的地图元素的索引值列表</param>
+    private void GenerateGold(List<int> availableIndex)
+    {
+        for (int i = 0; i < obstacleAreaNum * 3; i++)
+        {
+            int tempIndex = availableIndex[Random.Range(0, availableIndex.Count)];
+            availableIndex.Remove(tempIndex);
+            GoldElement g = (GoldElement)SetElement(tempIndex, ElementContent.Gold);
+            g.goldType = (GoldType)Random.Range(0, 7);
+            if (g.isHide == false)
+            {
+                g.ConfirmSprite();
+            }
+        }
+    }
+
+    private void GenerateExit(List<int> availableIndex)
+    {
+        float x = w - 1.5f;
+        float y = Random.Range(1, h) - 0.5f;
+        BaseElement exit = SetElement(GetIndex((int)(x + 0.5), (int)(y - 0.5)), ElementContent.Exit);
+        // 设置位置
+        exit.transform.position = new Vector3(x, y, 0);
+        // 移出1x1单元格碰撞器
+        Destroy(exit.GetComponent<BoxCollider2D>());
+        // 添加2x2单元格碰撞器
+        exit.gameObject.AddComponent<BoxCollider2D>();
+        availableIndex.Remove(GetIndex((int)(x + 0.5), (int)(y - 0.5)));
+        availableIndex.Remove(GetIndex((int)(x + 0.5), (int)(y + 0.5)));
+        availableIndex.Remove(GetIndex((int)(x - 0.5), (int)(y - 0.5)));
+        availableIndex.Remove(GetIndex((int)(x - 0.5), (int)(y + 0.5)));
+        Destroy(mapArray[(int)(x + 0.5), (int)(y + 0.5)].gameObject);
+        Destroy(mapArray[(int)(x - 0.5), (int)(y - 0.5)].gameObject);
+        Destroy(mapArray[(int)(x - 0.5), (int)(y + 0.5)].gameObject);
+        mapArray[(int)(x + 0.5), (int)(y + 0.5)] = exit;
+        mapArray[(int)(x - 0.5), (int)(y - 0.5)] = exit;
+        mapArray[(int)(x - 0.5), (int)(y + 0.5)] = exit;
+    }
+
+    /// <summary>
+    /// 生成障碍物区
+    /// </summary>
+    /// <param name="availableIndex"></param>
+    private void GenerateObstacleArea(List<int> availableIndex)
+    {
+        for(int i = 0; i < obstacleAreaNum; i++)
+        {
+            if (Random.value < 0.5f)
+            {
+                CreateCloseArea(i, availableIndex);
+            }
+            else
+            {
+                CreateRandomWall(i, availableIndex);
+            }
+        }
+    }
+
+    /// <summary>
+    /// 闭合区域信息结构体
+    /// </summary>
+    private struct CloseAreaInfo
+    {
+        public int x, y, sx, ex, sy, ey;
+        public int doorType;
+        public Vector2 doorPos;
+        public int tx, ty;
+        public ToolElement t;
+        public int gx, gy;
+        public GoldElement g;
+        public int innerCount, goldNum;
+    }
+
+    /// <summary>
+    /// 生成开启闭合障碍物区所需的道具
+    /// </summary>
+    /// <param name="info">闭合区域信息</param>
+    /// <param name="availableIndex">要生成的闭合区域信息结构体</param>
+    private void CreateCloseAreaTool(CloseAreaInfo info, List<int> availableIndex)
+    {
+        info.tx = Random.Range(0, info.sx);
+        info.ty = Random.Range(0, h);
+        for (; !availableIndex.Contains(GetIndex(info.tx, info.ty));)
+        {
+            info.tx = Random.Range(0, info.sx);
+            info.ty = Random.Range(0, h);
+        }
+        availableIndex.Remove(GetIndex(info.tx, info.ty));
+        info.t = (ToolElement)SetElement(GetIndex(info.tx, info.ty), ElementContent.Tool);
+        info.t.toolType = (ToolType)info.doorType;
+        if (info.t.isHide == false)
+        {
+            info.t.ConfirmSprite();
+        }
+    }
+
+    /// <summary>
+    /// 生成闭合区域信息
+    /// </summary>
+    /// <param name="type">闭合区域类型，0：与边界闭合；1：自闭合</param>
+    /// <param name="nowArea">闭合区域索引值</param>
+    /// <param name="info">要生成的闭合区域信息结构体</param>
+    private void CreateCloseAreaInfo(int type, int nowArea, ref CloseAreaInfo info)
+    {
+        switch (type)
+        {
+            case 0:
+                info.x = Random.Range(3, obstacleAreaW - 2);
+                info.y = Random.Range(3, h - 3);
+                info.sx = standAreaW + nowArea * obstacleAreaW + 1;
+                info.ex = info.sx + info.x;
+                info.doorType = Random.Range(4, 8);
+                break;
+            case 1:
+                info.x = Random.Range(3, obstacleAreaW - 2);
+                info.y = Random.Range(3, info.x + 1);
+                info.sx = standAreaW + nowArea * obstacleAreaW + 1;
+                info.ex = info.sx + info.x;
+                info.sy = Random.Range(3, h - info.y - 1);
+                info.ey = info.sy + info.y;
+                info.doorType = (int)ElementContent.BigWall;
+                break;
+        }
+    }
+
+    /// <summary>
+    /// 生成U或L闭合障碍物区域的门
+    /// </summary>
+    /// <param name="info">闭合区域信息</param>
+    /// <param name="availableIndex">要生成的闭合区域信息结构体</param>
+    private void CreateULShapeAreaDoor(CloseAreaInfo info, List<int> availableIndex)
+    {
+        availableIndex.Remove(GetIndex((int)info.doorPos.x, (int)info.doorPos.y));
+        SetElement(GetIndex((int)info.doorPos.x, (int)info.doorPos.y), (ElementContent)info.doorType);
+    }
+
+    /// <summary>
+    /// 生成闭合障碍物区内的奖励物品
+    /// </summary>
+    /// <param name="info">闭合区域信息</param>
+    /// <param name="availableIndex">要生成的闭合区域信息结构体</param>
+    private void CreateCloseAreaRewards(CloseAreaInfo info, List<int> availableIndex)
+    {
+        info.innerCount = info.x * info.y;
+        info.goldNum = Random.Range(1, Random.value < 0.5f ? info.innerCount + 1 : info.innerCount / 2);
+        for (int i = 0; i < info.goldNum; i++)
+        {
+            info.gy = i / info.x;
+            info.gx = i - info.gy * info.x;
+            info.gx = info.sx + info.gx + 1;
+            info.gy = info.sy + info.gy + 1;
+            if (availableIndex.Contains(GetIndex(info.gx, info.gy)))
+            {
+                availableIndex.Remove(GetIndex(info.gx, info.gy));
+                info.g = (GoldElement)SetElement(GetIndex(info.gx, info.gy), ElementContent.Gold);
+                info.g.goldType = (GoldType)Random.Range(0, 7);
+                if (info.g.isHide == false)
+                {
+                    info.g.ConfirmSprite();
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// 创建障碍物闭合区
+    /// </summary>
+    /// <param name="nowArea">当前障碍物区域索引</param>
+    /// <param name="availableIndex"></param>
+    private void CreateCloseArea(int nowArea, List<int> availableIndex)
+    {
+        int shape = Random.Range(0, 2);
+        CloseAreaInfo info = new CloseAreaInfo();
+        switch (shape)
+        {
+            case 0:
+                CreateCloseAreaInfo(0, nowArea, ref info);
+                int dir = Random.Range(0, 4);
+                switch (dir)
+                {
+                    case 0:
+                        info.doorPos = Random.value < 0.5f ? new Vector2(Random.Range(info.sx + 1, info.ex), info.y) : new Vector2(Random.value < 0.5f ? info.sx : info.ex, Random.Range(info.y, h));
+                        CreateULShapeAreaDoor(info, availableIndex);
+                        for (int i = h - 1; i > info.y; i--)
+                        {
+                            if (availableIndex.Contains(GetIndex(info.sx, i)))
+                            {
+                                availableIndex.Remove(GetIndex(info.sx, i));
+                                SetElement(GetIndex(info.sx, i), ElementContent.BigWall);
+                            }
+                        }
+                        for (int i = info.sx; i < info.ex; i++)
+                        {
+                            if (availableIndex.Contains(GetIndex(i, info.y)))
+                            {
+                                availableIndex.Remove(GetIndex(i, info.y));
+                                SetElement(GetIndex(i, info.y), ElementContent.BigWall);
+                            }
+                        }
+                        for (int i = h - 1; i >= info.y; i--)
+                        {
+                            if (availableIndex.Contains(GetIndex(info.ex, i)))
+                            {
+                                availableIndex.Remove(GetIndex(info.ex, i));
+                                SetElement(GetIndex(info.ex, i), ElementContent.BigWall);
+                            }
+                        }
+                        info.sy = info.y;
+                        info.ey = h - 1;
+                        info.y = h - 1 - info.y;
+                        CreateCloseAreaRewards(info, availableIndex);
+                        break;
+                    case 1:
+                        info.doorPos = Random.value < 0.5f ? new Vector2(Random.Range(info.sx + 1, info.ex), info.y) : new Vector2(Random.value < 0.5f ? info.sx : info.ex, Random.Range(0, info.y));
+                        CreateULShapeAreaDoor(info, availableIndex);
+                        for (int i = 0; i < info.y; i++)
+                        {
+                            if (availableIndex.Contains(GetIndex(info.sx, i)))
+                            {
+                                availableIndex.Remove(GetIndex(info.sx, i));
+                                SetElement(GetIndex(info.sx, i), ElementContent.BigWall);
+                            }
+                        }
+                        for (int i = info.sx; i < info.ex; i++)
+                        {
+                            if (availableIndex.Contains(GetIndex(i, info.y)))
+                            {
+                                availableIndex.Remove(GetIndex(i, info.y));
+                                SetElement(GetIndex(i, info.y), ElementContent.BigWall);
+                            }
+                        }
+                        for (int i = 0; i <= info.y; i++)
+                        {
+                            if (availableIndex.Contains(GetIndex(info.ex, i)))
+                            {
+                                availableIndex.Remove(GetIndex(info.ex, i));
+                                SetElement(GetIndex(info.ex, i), ElementContent.BigWall);
+                            }
+                        }
+                        info.sy = 0;
+                        info.ey = info.y;
+                        CreateCloseAreaRewards(info, availableIndex);
+                        break;
+                    case 2:
+                        info.doorPos = Random.value < 0.5f ? new Vector2(Random.Range(info.sx + 1, info.ex), info.y) : new Vector2(info.sx, Random.Range(info.y, h));
+                        CreateULShapeAreaDoor(info, availableIndex);
+                        for (int i = h - 1; i > info.y; i--)
+                        {
+                            if (availableIndex.Contains(GetIndex(info.sx, i)))
+                            {
+                                availableIndex.Remove(GetIndex(info.sx, i));
+                                SetElement(GetIndex(info.sx, i), ElementContent.BigWall);
+                            }
+                        }
+                        for (int i = info.sx; i < info.ex; i++)
+                        {
+                            if (availableIndex.Contains(GetIndex(i, info.y)))
+                            {
+                                availableIndex.Remove(GetIndex(i, info.y));
+                                SetElement(GetIndex(i, info.y), ElementContent.BigWall);
+                            }
+                        }
+                        for (int i = 0; i <= info.y; i++)
+                        {
+                            if (availableIndex.Contains(GetIndex(info.ex, i)))
+                            {
+                                availableIndex.Remove(GetIndex(info.ex, i));
+                                SetElement(GetIndex(info.ex, i), ElementContent.BigWall);
+                            }
+                        }
+                        break;
+                    case 3:
+                        info.doorPos = Random.value < 0.5f ? new Vector2(Random.Range(info.sx + 1, info.ex), info.y) : new Vector2(info.sx, Random.Range(0, info.y));
+                        CreateULShapeAreaDoor(info, availableIndex);
+                        for (int i = 0; i < info.y; i++)
+                        {
+                            if (availableIndex.Contains(GetIndex(info.sx, i)))
+                            {
+                                availableIndex.Remove(GetIndex(info.sx, i));
+                                SetElement(GetIndex(info.sx, i), ElementContent.BigWall);
+                            }
+                        }
+                        for (int i = info.sx; i < info.ex; i++)
+                        {
+                            if (availableIndex.Contains(GetIndex(i, info.y)))
+                            {
+                                availableIndex.Remove(GetIndex(i, info.y));
+                                SetElement(GetIndex(i, info.y), ElementContent.BigWall);
+                            }
+                        }
+                        for (int i = h - 1; i >= info.y; i--)
+                        {
+                            if (availableIndex.Contains(GetIndex(info.ex, i)))
+                            {
+                                availableIndex.Remove(GetIndex(info.ex, i));
+                                SetElement(GetIndex(info.ex, i), ElementContent.BigWall);
+                            }
+                        }
+                        break;
+                }
+                CreateCloseAreaTool(info, availableIndex);
+                break;
+            case 1:
+                CreateCloseAreaInfo(1, nowArea, ref info);
+                for (int i = info.sx; i <= info.ex; i++)
+                {
+                    if (availableIndex.Contains(GetIndex(i, info.sy)))
+                    {
+                        availableIndex.Remove(GetIndex(i, info.sy));
+                        SetElement(GetIndex(i, info.sy), ElementContent.BigWall);
+                    }
+                    if (availableIndex.Contains(GetIndex(i, info.ey)))
+                    {
+                        availableIndex.Remove(GetIndex(i, info.ey));
+                        SetElement(GetIndex(i, info.ey), ElementContent.BigWall);
+                    }
+                }
+                for (int i = info.sy + 1; i < info.ey; i++)
+                {
+                    if (availableIndex.Contains(GetIndex(info.sx, i)))
+                    {
+                        availableIndex.Remove(GetIndex(info.sx, i));
+                        SetElement(GetIndex(info.sx, i), ElementContent.BigWall);
+                    }
+                    if (availableIndex.Contains(GetIndex(info.ex, i)))
+                    {
+                        availableIndex.Remove(GetIndex(info.ex, i));
+                        SetElement(GetIndex(info.ex, i), ElementContent.BigWall);
+                    }
+                }
+                CreateCloseAreaTool(info, availableIndex);
+                CreateCloseAreaRewards(info, availableIndex);
+                break;
+        }
+    }
+
+    /// <summary>
+    /// 生成随机离散障碍物
+    /// </summary>
+    /// <param name="nowArea">当前障碍物区域索引</param>
+    /// <param name="availableIndex"></param>
+    private void CreateRandomWall(int nowArea, List<int> availableIndex)
+    {
+        for (int i = 0; i < 5; i++)
+        {
+            int sx = standAreaW + nowArea * obstacleAreaW + 1;
+            int ex = sx + obstacleAreaW;
+            int wx = Random.Range(sx, ex);
+            int wy = Random.Range(0, h);
+            for (; !availableIndex.Contains(GetIndex(wx, wy));)
+            {
+                wx = Random.Range(sx, ex);
+                wy = Random.Range(0, h);
+            }
+            availableIndex.Remove(GetIndex(wx, wy));
+            SetElement(GetIndex(wx, wy), Random.value < 0.5f ? ElementContent.SmallWall : ElementContent.BigWall);
+        }
     }
 
     /// <summary>
     /// 生成陷井
     /// </summary>
+    /// <param name="standAreaY">站立区域中心Y坐标</param>
     /// <param name="availableIndex">未初始化的地图元素索引列表</param>
-    private void GenerateTrap(List<int> availableIndex)
+    private void GenerateTrap(int standAreaY, List<int> availableIndex)
     {
         float trapProbability = Random.Range(minTrapProbability, maxTrapProbability);
         int trapNum = (int)(availableIndex.Count * trapProbability);
@@ -145,6 +547,10 @@ public class GameManager : MonoSingleton<GameManager> {
             int tempIndex = availableIndex[Random.Range(0, availableIndex.Count)];
             int x, y;
             GetPosition(tempIndex, out x, out y);
+            if(x >= 0 && x < standAreaW && y >= standAreaY - 1 && y <= standAreaY + 1)
+            {
+                continue;
+            }
             availableIndex.Remove(tempIndex);
             SetElement(tempIndex, ElementContent.Trap);
         }
@@ -161,6 +567,24 @@ public class GameManager : MonoSingleton<GameManager> {
             SetElement(i, ElementContent.Number);
         }
         availableIndex.Clear();
+    }
+
+    /// <summary>
+    /// 生成站立区域
+    /// </summary>
+    /// <param name="y">站立区域中心y坐标</param>
+    private void GenerateStandArea(int y)
+    {
+        for (int i = 0; i < standAreaW; i++)
+        {
+            for (int j = y - 1; j <= y + 1; j++)
+            {
+                ((SingleCoveredElement)mapArray[i, j]).UnCoveredElementSingle();
+            }
+        }
+        //player.transform.position = new Vector3(1, y, 0);
+        //prePos = nowPos = player.transform.position.ToVector3Int();
+        mapArray[1, y].OnPlayerStand();
     }
 
     /// <summary>
@@ -190,6 +614,21 @@ public class GameManager : MonoSingleton<GameManager> {
                 break;
             case ElementContent.Gold:
                 mapArray[x, y] = tempGameObject.AddComponent<GoldElement>();
+                break;
+            case ElementContent.Enemy:
+                mapArray[x, y] = tempGameObject.AddComponent<EnemyElement>();
+                break;
+            case ElementContent.Door:
+                mapArray[x, y] = tempGameObject.AddComponent<DoorElement>();
+                break;
+            case ElementContent.BigWall:
+                mapArray[x, y] = tempGameObject.AddComponent<BigWallElement>();
+                break;
+            case ElementContent.SmallWall:
+                mapArray[x, y] = tempGameObject.AddComponent<SmallWallElement>();
+                break;
+            case ElementContent.Exit:
+                mapArray[x, y] = tempGameObject.AddComponent<ExitElement>();
                 break;
             default:
                 break;
