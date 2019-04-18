@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Cinemachine;
 
 public class GameManager : MonoSingleton<GameManager> {
 
@@ -19,6 +20,9 @@ public class GameManager : MonoSingleton<GameManager> {
     public GameObject smokeEffect;
     public GameObject UncoveredEffect;
     public GameObject GoldEffect;
+
+    [Header("角色游戏物体")]
+    public GameObject player;
 
     [Header("图片资源")]
     public Sprite[] coverTileSprites;
@@ -101,8 +105,13 @@ public class GameManager : MonoSingleton<GameManager> {
     // 
     private void ResetCamera()
     {
-        Camera.main.orthographicSize = (h + 3) / 2f;
-        Camera.main.transform.position = new Vector3((w - 1) / 2f, (h - 1) / 2f, -10);
+        //Camera.main.orthographicSize = (h + 3) / 2f;
+        //Camera.main.transform.position = new Vector3((w - 1) / 2f, (h - 1) / 2f, -10);
+        CinemachineVirtualCamera vCam = GameObject.Find("VCam").GetComponent<CinemachineVirtualCamera>();
+        vCam.m_Lens.OrthographicSize = (h + 3) / 2f;
+        CinemachineFramingTransposer ft = vCam.GetCinemachineComponent(CinemachineCore.Stage.Body) as CinemachineFramingTransposer;
+        ft.m_DeadZoneHeight = (h * 100) / (300 + h * 100f);
+        ft.m_DeadZoneWidth = (h * 100) / (300 + h * 100f) / 9 * 16 / h;
     }
 
     /// <summary>
@@ -582,8 +591,8 @@ public class GameManager : MonoSingleton<GameManager> {
                 ((SingleCoveredElement)mapArray[i, j]).UnCoveredElementSingle();
             }
         }
-        //player.transform.position = new Vector3(1, y, 0);
-        //prePos = nowPos = player.transform.position.ToVector3Int();
+        player.transform.position = new Vector3(1, y, 0);
+        // prePos = nowPos = player.transform.position.ToVector3Int();
         mapArray[1, y].OnPlayerStand();
     }
 
